@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="hero">
+    <h2>📄 Upload Answer Sheet for AI Evaluation</h2>
+    <p>Upload a PDF containing questions and answers. Our AI will evaluate each answer and provide detailed feedback.</p>
+</div>
+
+<div class="upload-card">
+    <form action="/upload" method="POST" enctype="multipart/form-data" id="uploadForm">
+        <div class="form-group">
+            <label for="file">Select PDF File</label>
+            <div class="file-upload-area" id="dropZone">
+                <span class="upload-icon">📁</span>
+                <p>Drag & Drop PDF here or <span class="browse-text">Browse</span></p>
+                <input type="file" name="file" id="file" accept=".pdf" required>
+                <p class="file-name" id="fileName"></p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="max_marks">Maximum Marks Per Question</label>
+            <select name="max_marks" id="max_marks">
+                <option value="5">5 Marks</option>
+                <option value="10" selected>10 Marks</option>
+                <option value="15">15 Marks</option>
+                <option value="20">20 Marks</option>
+                <option value="25">25 Marks</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn-primary" id="submitBtn">
+            🚀 Evaluate Paper
+        </button>
+
+        <div class="loading" id="loading" style="display:none;">
+            <div class="spinner"></div>
+            <p>AI is evaluating your paper... This may take a minute.</p>
+        </div>
+    </form>
+</div>
+
+<!-- Previous Evaluations -->
+{% if evaluations %}
+<div class="history-section">
+    <h3>📊 Previous Evaluations</h3>
+    <div class="history-grid">
+        {% for eval in evaluations %}
+        <a href="/results/{{ eval.id }}" class="history-card">
+            <div class="history-file">📄 {{ eval.filename }}</div>
+            <div class="history-details">
+                <span class="grade grade-{{ eval.grade|lower }}">{{ eval.grade }}</span>
+                <span class="percentage">{{ eval.percentage }}%</span>
+            </div>
+            <div class="history-date">{{ eval.upload_date.strftime('%d %b %Y, %I:%M %p') }}</div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<div class="instructions">
+    <h3>📋 PDF Format Guidelines</h3>
+    <div class="format-examples">
+        <div class="format-card">
+            <h4>✅ Supported Format</h4>
+            <pre>
+Q1. What is Python?
+Answer: Python is a high-level programming
+language known for its simplicity.
+
+Q2. Explain OOP concepts.
+Answer: OOP stands for Object-Oriented
+Programming. It includes encapsulation,
+inheritance, polymorphism, and abstraction.
+            </pre>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="results-header">
+    <h2>📊 Evaluation Results</h2>
+    <p class="filename">📄 {{ evaluation.filename }}</p>
+</div>
+
+<!-- Summary Card -->
+<div class="summary-card">
+    <div class="summary-grid">
+        <div class="summary-item">
+            <span class="summary-label">Total Marks</span>
+            <span class="summary-value">{{ evaluation.total_marks }} / {{ evaluation.max_marks }}</span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">Percentage</span>
+            <span class="summary-value">{{ evaluation.percentage }}%</span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">Grade</span>
+            <span class="summary-value grade grade-{{ evaluation.grade|lower }}">{{ evaluation.grade }}</span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">Questions</span>
+            <span class="summary-value">{{ evaluation.total_questions }}</span>
+        </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar-container">
+        <div class="progress-bar" style="width: {{ evaluation.percentage }}%"></div>
+    </div>
+</div>
+
+<!-- Detailed Results -->
+<div class="detailed-results">
+    <h3>📝 Question-wise Analysis</h3>
+
+    {% for result in results %}
+    <div class="question-card">
+        <div class="question-header">
+            <span class="q-number">Q{{ result.question_no }}</span>
+            <span class="q-marks">{{ result.marks_obtained }} / {{ result.max_marks }} marks</span>
+            <span class="q-badge badge-{{ result.correctness|lower }}">{{ result.correctness }}</span>
+        </div>
+
+        <div class="question-body">
+            <div class="q-section">
+                <strong>Question:</strong>
+                <p>{{ result.question }}</p>
+            </div>
+
+            <div class="q-section">
+                <strong>Student's Answer:</strong>
+                <p>{{ result.student_answer }}</p>
+            </div>
+
+            <div class="q-section feedback">
+                <strong>📝 AI Feedback:</strong>
+                <p>{{ result.feedback }}</p>
+            </div>
+
+            {% if result.strengths %}
+            <div class="q-section strengths">
+                <strong>✅ Strengths:</strong>
+                <ul>
+                    {% for s in result.strengths %}
+                    <li>{{ s }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% if result.improvements %}
+            <div class="q-section improvements">
+                <strong>⚠️ Areas for Improvement:</strong>
+                <ul>
+                    {% for i in result.improvements %}
+                    <li>{{ i }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<a href="/" class="btn-primary" style="display:inline-block; margin-top:20px;">← Back to Home</a>
+{% endblock %}
